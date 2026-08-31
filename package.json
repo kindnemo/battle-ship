@@ -1,0 +1,31 @@
+{
+  "name": "battle-ship",
+  "version": "1.0.0",
+  "description": "BattleShip Game for The Odin Project",
+  "homepage": "https://github.com/kindnemo/battle-ship#readme",
+  "bugs": {
+    "url": "https://github.com/kindnemo/battle-ship/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kindnemo/battle-ship.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.29.7",
+    "css-loader": "^7.1.4",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.8",
+    "jest": "^30.4.2",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.109.2",
+    "webpack-cli": "^7.2.2",
+    "webpack-dev-server": "^5.2.6"
+  }
+}
