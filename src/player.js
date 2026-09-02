@@ -33,6 +33,10 @@ export class Player {
             for (let i =0; i< ship.length; i++) {
                 this.gameBoard.coordinates[x + i][y].ship = ship;
             }
+        } else if (orientation === "vertical"){
+            for (let i = 0; i < ship.length; i++) {
+                this.gameBoard.coordinates[x][y + i].ship = ship;
+            }
         }
     }
 }

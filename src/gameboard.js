@@ -13,6 +13,7 @@ export class GameBoard {
             return 'Already attacked this position';
         }
         this.hits.push({ x, y });
+        this.coordinates[x][y].ship.hit();
         return 'Hit';
     }
 
@@ -23,5 +24,20 @@ export class GameBoard {
 
     allShipsSunk() {
         return this.ships.every(ship => ship.isSunk());
+    }
+
+    checkShipCoords(ship, x,y, orientation) {
+        // Implementation for checking ship placement
+        const coords = [];
+        if (orientation === 'horizontal') {
+            for (let i = 0; i < ship.length; i++) {
+                coords.push({ x: x + i, y: y });
+            }
+        }else{
+            for (let i = 0; i < ship.length; i++) {
+                coords.push({ x: x, y: y + i });
+            }
+        }
+        return coords;
     }
 }
