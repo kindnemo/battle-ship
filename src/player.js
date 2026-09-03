@@ -13,30 +13,8 @@ export class Player {
         this.submarine = new Ship('Submarine', 2);
     }
 
-
-    placeShip(ship, x, y, orientation) {
-        // Implementing ship placement logic based on orientation and coordinates
-        
-        // Checking if the ship is out of bounds
-        if (orientation === 'horizontal') {
-            if (x + ship.length > 10) {
-                return 'Ship placement is out of bounds';
-            }
-        } else if (orientation === 'vertical') {
-            if (y + ship.length > 10) {
-                return 'Ship placement is out of bounds';
-            }
-        }
-
-        // Placing ships vertically or horizontally based on the orientation
-        if (orientation === 'horizontal') {
-            for (let i =0; i< ship.length; i++) {
-                this.gameBoard.coordinates[x + i][y].ship = ship;
-            }
-        } else if (orientation === "vertical"){
-            for (let i = 0; i < ship.length; i++) {
-                this.gameBoard.coordinates[x][y + i].ship = ship;
-            }
-        }
+    attack(opponent, x, y) {
+        const opp = opponent.gameBoard;
+        return opp.receiveAttack(x, y);
     }
 }

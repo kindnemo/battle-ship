@@ -8,13 +8,46 @@ export class GameBoard {
         );
     }
 
+
+    placeShip(ship, x, y, orientation) {
+        if (orientation === 'horizontal') {
+            if (x + ship.length > 10) {
+                return 'Ship placement is out of bounds';
+            }
+        } else if (orientation === 'vertical') {
+            if (y + ship.length > 10) {
+                return 'Ship placement is out of bounds';
+            }
+        } else {
+            return 'Invalid orientation';
+        }
+
+        const shipCoords = this.checkShipCoords(ship, x, y, orientation);
+
+        if (shipCoords.some(coord => this.coordinates[coord.x][coord.y].ship)) {
+            return 'A ship is already placed at these coordinates';
+        }
+
+        shipCoords.forEach(coord => {
+            this.coordinates[coord.x][coord.y].ship = ship;
+        });
+
+        this.ships.push(ship);
+        return 'Ship placed';
+    }
+
     receiveAttack(x, y) {
         if (this.hits.some(hit => hit.x === x && hit.y === y) || this.misses.some(miss => miss.x === x && miss.y === y)) {
             return 'Already attacked this position';
         }
-        this.hits.push({ x, y });
-        this.coordinates[x][y].ship.hit();
-        return 'Hit';
+
+        if (this.coordinates[x][y].ship) {
+            this.hits.push({ x, y });
+            this.coordinates[x][y].ship.hit();
+            return 'Hit';
+        }
+
+        return this.missedAttack(x, y);
     }
 
     missedAttack(x, y) {

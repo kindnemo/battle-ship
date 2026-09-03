@@ -8,7 +8,7 @@ describe('Player', () =>{
     });
     test('should place a ship on the game board', () => {
         const player1 = new Player('Player 1', 0);
-        player1.placeShip(player1.carrier, 0, 0, 'horizontal');
+        player1.gameBoard.placeShip(player1.carrier, 0, 0, 'horizontal');
         for (let i = 0; i < player1.carrier.length; i++) {
             expect(player1.gameBoard.coordinates[i][0].ship).toBe(player1.carrier);
         }
@@ -17,14 +17,14 @@ describe('Player', () =>{
     // Testing ship placement out of bounds
     test('should not place a ship out of bounds', () => {
         const player1 = new Player('Player 1', 0);
-        const result = player1.placeShip(player1.carrier, 8, 0, 'horizontal');
+        const result = player1.gameBoard.placeShip(player1.carrier, 8, 0, 'horizontal');
         expect(result).toBe('Ship placement is out of bounds');
     });
 
     // Testing attacking a ship and seeing if it hits
     test('should record a hit when attacking a ship', () => {
         const player1 = new Player('Player 1', 0);
-        player1.placeShip(player1.carrier, 0, 0, 'horizontal');
+        player1.gameBoard.placeShip(player1.carrier, 0, 0, 'horizontal');
         const result = player1.gameBoard.receiveAttack(0, 0);
         expect(result).toBe('Hit');
     })
@@ -32,9 +32,9 @@ describe('Player', () =>{
     // Testing ship coordinates placement
     test('should return the coordinates of the ship', () => {
         const player1 = new Player('Player 1', 0);
-        player1.placeShip(player1.submarine, 0, 0, 'vertical');
+        player1.gameBoard.placeShip(player1.submarine, 0, 0, 'vertical');
         const coords = player1.gameBoard.checkShipCoords(player1.submarine, 0, 0, 'vertical');
-        player1.placeShip(player1.carrier, 2, 1, 'horizontal');
+        player1.gameBoard.placeShip(player1.carrier, 2, 1, 'horizontal');
         const coords2 = player1.gameBoard.checkShipCoords(player1.carrier, 2, 1, 'horizontal');
         expect(coords).toEqual([{ x: 0, y: 0 }, { x: 0, y: 1 }]);
         expect(coords2).toEqual([{ x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }, { x: 5, y: 1 }, { x: 6, y: 1 }]);
@@ -43,10 +43,38 @@ describe('Player', () =>{
     // Testing attacking a ship and seeing if it is sunk
     test('Should record a sink when attacking the entire length of a ship', () => {
         const player1 = new Player('Player 1', 0 );
-        player1.placeShip(player1.carrier, 0, 0, 'horizontal');
+        player1.gameBoard.placeShip(player1.carrier, 0, 0, 'horizontal');
         for (let i = 0; i < player1.carrier.length; i++){
             player1.gameBoard.receiveAttack(i, 0);
         }
         expect(player1.carrier.isSunk()).toBe(true);
+    });
+
+    // Testing overlapping ship placement
+    test('should not place a ship on top of another ship', () => {
+        const player1 = new Player('Player 1', 0);
+        player1.gameBoard.placeShip(player1.carrier, 0, 0, 'horizontal');
+        const result = player1.gameBoard.placeShip(player1.cruiser, 0, 0, 'horizontal');
+        expect(result).toBe('A ship is already placed at these coordinates');
+    });
+
+    // Testing already attacked positions
+    test("Should not allow attacking twice in same postion", ()=>{
+        const player1 = new Player('Player 1', 0);
+        const result1 = player1.gameBoard.receiveAttack(0, 0);
+        const result2 = player1.gameBoard.receiveAttack(0, 0);
+        expect(result2).toBe('Already attacked this position');
+    });
+
+    test('should attack an opponent board', () => {
+        const player1 = new Player('Player 1', 0);
+        const player2 = new Player('Player 2', 0);
+
+        player2.gameBoard.placeShip(player2.submarine, 0, 0, 'vertical');
+        const result = player1.attack(player2, 0, 1);
+
+        expect(result).toBe('Hit');
+        expect(player2.submarine.hits).toBe(1);
+        expect(player2.gameBoard.hits).toEqual([{ x: 0, y: 1 }]);
     });
 });
