@@ -6,6 +6,72 @@
     <title>BattleShip</title>
 </head>
 <body>
-    
+    <header id="header">
+        <div class="header-text">
+            <h1 id="hero-name">BattleShip</h1>
+            <h2 id="sub-hero-text">COMMAND DISPLAY - GRID REF. 10X10 - CHANNEL 4</h2>
+        </div>
+
+        <div class="header-text">
+            <h3 id="game-rule-text">Sink All Ships</h3>
+            <p id="move-indicator"></p>
+        </div>
+    </header>
+
+    <main id="main">
+        <div id="gameboard-container">
+            <div class="gameboard-subcontainer">
+                <div class="gameboard-info">
+                    <p class="fleet-info">Your Fleet</p>
+                    <p class="view">Defensive View</p>
+                </div>
+                <div class="gameboard" id="gameboard-1"></div>
+            </div>
+            <div class="gameboard-subcontainer">
+                <div class="gameboard-info">
+                    <p class="fleet-info">Enemy Fleet</p>
+                    <p class="view">Targeting View</p>
+                </div>
+                <div class="gameboard" id="gameboard-2"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-div" id = "legend-div">
+                <h2 class="sub-hero-text">Legend</h2>
+                
+                <div class="legend-row">
+                    <div class="legend-square" id="swatch-open"></div>
+                    <p>Open Water</p>
+                </div>
+                
+                <div class="legend-row">
+                    <div class="legend-square" id="swatch-ship"></div>
+                    <p>Ship</p>
+                </div>
+                
+                <div class="legend-row">
+                    <div class="legend-square" id="swatch-hit"></div>
+                    <p>Hit</p>
+                </div>
+                
+                <div class="legend-row">
+                    <div class="legend-square" id="swatch-miss"></div>
+                    <p>Miss</p>
+                </div>
+                
+                <div class="legend-row">
+                    <div class="legend-square" id="swatch-sunk"></div>
+                    <p>Sunk</p>
+                </div>
+            </div>
+            <div class="footer-div" id = "fleet-status-div">
+                <h2 class="sub-hero-text">Fleet Status</h2>
+                <ul class="fleet-list" id="fleet-status"></ul>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
