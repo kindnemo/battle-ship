@@ -1,3 +1,303 @@
-body {
-    background-color: black;
+/* ============================================
+   Battleship — Command Display
+   Naval / sonar-chart theme
+   ============================================ */
+
+:root{
+  --hull:#0A1B26;
+  --panel:#102A38;
+  --panel-raised:#153548;
+  --water:#1C4A61;
+  --water-line:#2B6480;
+  --brass:#D8A94E;
+  --brass-dim:#8A6E35;
+  --paper:#EFE7D6;
+  --paper-dim:#B9AF9B;
+  --hit:#C4472F;
+  --miss:#5F7E8C;
+  --sunk:#4A1F16;
 }
+
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at top, rgba(216,169,78,0.06), transparent 55%),
+    var(--hull);
+  color:var(--paper);
+  font-family:'IBM Plex Mono', monospace;
+  padding:32px 20px 60px;
+  min-height:100vh;
+}
+
+/* ---------- Header ---------- */
+#header{
+  max-width:980px;
+  margin:0 auto 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  border-bottom:2px solid var(--brass-dim);
+  padding-bottom:18px;
+  gap:20px;
+}
+
+#hero-name{
+  font-family:'Special Elite', cursive;
+  font-size:clamp(28px, 4vw, 40px);
+  letter-spacing:0.5px;
+  margin:0;
+  color:var(--paper);
+  font-weight:400;
+}
+
+#sub-hero-text{
+  font-size:12px;
+  font-weight:400;
+  margin-top:6px;
+  letter-spacing:1px;
+  color:var(--brass);
+  text-transform:none;
+}
+
+.header-text:last-child{
+  text-align:right;
+}
+
+#game-rule-text{
+  font-size:12px;
+  font-weight:400;
+  margin:0;
+  color:var(--paper-dim);
+  letter-spacing:0.5px;
+}
+
+#move-indicator{
+  font-size:11px;
+  margin:6px 0 0;
+  color:var(--paper-dim);
+}
+
+/* ---------- Boards ---------- */
+#main{
+  max-width:980px;
+  margin:0 auto;
+}
+
+#gameboard-container{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:26px;
+}
+
+@media (max-width:760px){
+  #gameboard-container{
+    grid-template-columns:1fr;
+  }
+}
+
+.gameboard-subcontainer{
+  background:var(--panel);
+  border:1px solid var(--water-line);
+  border-radius:2px;
+  padding:18px 18px 22px;
+  position:relative;
+}
+
+.gameboard-info{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:14px;
+}
+
+.fleet-info{
+  font-family:'Special Elite', cursive;
+  font-size:16px;
+  margin:0;
+  color:var(--paper);
+  font-weight:400;
+}
+
+.view{
+  font-size:10px;
+  margin:0;
+  color:var(--brass-dim);
+}
+
+/* Grid itself — JS should append 100 child elements with class "cell"
+   (plus optional modifier classes: ship / hit / miss / sunk) into
+   #gameboard-1 and #gameboard-2 */
+.gameboard{
+  display:grid;
+  grid-template-columns:repeat(10, 1fr);
+  grid-template-rows:repeat(10, 1fr);
+  gap:2px;
+  aspect-ratio:1/1;
+}
+
+/* Optional coordinate labels — give a cell class="coord" to use this */
+.coord{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  color:var(--brass-dim);
+}
+
+.cell{
+  background:var(--water);
+  border:1px solid rgba(43,100,128,0.5);
+  position:relative;
+  cursor:pointer;
+}
+
+.cell.ship{ background:#2C5A72; }
+.cell.ship::after{
+  content:'';
+  position:absolute; inset:3px;
+  border:1px solid var(--brass-dim);
+  border-radius:1px;
+}
+
+.cell.hit{ background:var(--hit); }
+.cell.hit::after{
+  content:'✕';
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; color:#2A0A05;
+}
+
+.cell.miss::after{
+  content:'';
+  position:absolute; top:50%; left:50%;
+  width:5px; height:5px;
+  background:var(--miss);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+
+.cell.sunk{ background:var(--sunk); }
+.cell.sunk::after{
+  content:'☠';
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:#E0B896;
+}
+
+/* Sonar sweep — add <div class="sonar-sweep"></div> as the first child
+   of the enemy board's .gameboard-subcontainer for the animated overlay */
+.sonar-sweep{
+  position:absolute;
+  top:38px; bottom:22px; left:18px; right:18px;
+  pointer-events:none;
+  overflow:hidden;
+  border-radius:1px;
+}
+.sonar-sweep::before{
+  content:'';
+  position:absolute;
+  top:50%; left:50%;
+  width:200%; height:200%;
+  background:conic-gradient(from 0deg, rgba(216,169,78,0.16), transparent 40deg);
+  transform-origin:center;
+  transform:translate(-50%,-50%);
+  animation:sweep 5s linear infinite;
+}
+@keyframes sweep{
+  from{ transform:translate(-50%,-50%) rotate(0deg); }
+  to{ transform:translate(-50%,-50%) rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce){
+  .sonar-sweep::before{ animation:none; }
+}
+
+/* ---------- Footer: legend + fleet status ---------- */
+footer{
+  max-width:980px;
+  margin:26px auto 0;
+}
+
+.footer-container{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:26px;
+}
+
+@media (max-width:760px){
+  .footer-container{ grid-template-columns:1fr; }
+}
+
+.footer-div{
+  background:var(--panel-raised);
+  border:1px solid var(--water-line);
+  padding:16px 18px;
+}
+
+.footer-div .sub-hero-text{
+  font-family:'Special Elite', cursive;
+  font-weight:400;
+  font-size:13px;
+  margin:0 0 12px;
+  color:var(--brass);
+}
+
+/* Legend */
+.legend-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  color:var(--paper-dim);
+  padding:5px 0;
+}
+
+.legend-square{
+  width:16px; height:16px;
+  border:1px solid rgba(43,100,128,0.6);
+  flex-shrink:0;
+}
+
+#swatch-open{ background:var(--water); }
+
+#swatch-ship{ background:#2C5A72; border-color:var(--brass-dim); }
+
+#swatch-hit{ background:var(--hit); }
+
+#swatch-miss{
+  background:var(--water);
+  position:relative;
+}
+#swatch-miss::after{
+  content:'';
+  position:absolute; top:50%; left:50%;
+  width:5px; height:5px;
+  background:var(--miss);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+
+#swatch-sunk{ background:var(--sunk); }
+
+/* Fleet status */
+.fleet-list{
+  list-style:none;
+  margin:0; padding:0;
+  font-size:12px;
+}
+
+.fleet-list li{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px dashed rgba(185,175,155,0.15);
+  color:var(--paper-dim);
+}
+
+.fleet-list li:last-child{ border-bottom:none; }
+
+/* If your JS builds each <li> with <span class="name"> and
+   <span class="hp"><span class="filled">■</span>...</span></span> */
+.fleet-list .name{ color:var(--paper); }
+.fleet-list .hp{ letter-spacing:2px; }
+.fleet-list .hp .filled{ color:var(--brass); }
+.fleet-list .hp .lost{ color:var(--sunk); }
