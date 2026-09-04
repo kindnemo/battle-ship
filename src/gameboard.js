@@ -1,3 +1,5 @@
+import { ShipPlacement } from './shipPlacement.js';
+
 export class GameBoard {
     constructor() {
         this.ships = [];
@@ -6,34 +8,12 @@ export class GameBoard {
         this.coordinates = Array.from({ length: 10 }, (_, x) =>
             Array.from({ length: 10 }, (_, y) => ({ x, y }))
         );
+        this.shipPlacement = new ShipPlacement(this);
     }
 
 
     placeShip(ship, x, y, orientation) {
-        if (orientation === 'horizontal') {
-            if (x + ship.length > 10) {
-                return 'Ship placement is out of bounds';
-            }
-        } else if (orientation === 'vertical') {
-            if (y + ship.length > 10) {
-                return 'Ship placement is out of bounds';
-            }
-        } else {
-            return 'Invalid orientation';
-        }
-
-        const shipCoords = this.checkShipCoords(ship, x, y, orientation);
-
-        if (shipCoords.some(coord => this.coordinates[coord.x][coord.y].ship)) {
-            return 'A ship is already placed at these coordinates';
-        }
-
-        shipCoords.forEach(coord => {
-            this.coordinates[coord.x][coord.y].ship = ship;
-        });
-
-        this.ships.push(ship);
-        return 'Ship placed';
+        return this.shipPlacement.place(ship, x, y, orientation);
     }
 
     receiveAttack(x, y) {
@@ -60,17 +40,6 @@ export class GameBoard {
     }
 
     checkShipCoords(ship, x,y, orientation) {
-        // Implementation for checking ship placement
-        const coords = [];
-        if (orientation === 'horizontal') {
-            for (let i = 0; i < ship.length; i++) {
-                coords.push({ x: x + i, y: y });
-            }
-        }else{
-            for (let i = 0; i < ship.length; i++) {
-                coords.push({ x: x, y: y + i });
-            }
-        }
-        return coords;
+        return this.shipPlacement.getCoordinates(ship, x, y, orientation);
     }
 }

@@ -83,6 +83,36 @@ body{
   margin:0 auto;
 }
 
+.game-controls{
+  display:flex;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.game-controls button{
+  background:var(--panel-raised);
+  border:1px solid var(--water-line);
+  color:var(--paper);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  padding:9px 12px;
+  cursor:pointer;
+}
+
+.game-controls button.active{
+  border-color:var(--brass);
+  color:var(--brass);
+}
+
+.game-controls button.secondary{
+  margin-left:auto;
+}
+
+.game-controls button:disabled{
+  opacity:0.45;
+  cursor:not-allowed;
+}
+
 #gameboard-container{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -149,6 +179,11 @@ body{
   border:1px solid rgba(43,100,128,0.5);
   position:relative;
   cursor:pointer;
+}
+
+.gameboard.boards-disabled{
+  pointer-events:none;
+  opacity:0.6;
 }
 
 .cell.ship{ background:#2C5A72; }
